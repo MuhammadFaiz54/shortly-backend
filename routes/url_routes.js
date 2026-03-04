@@ -1,5 +1,5 @@
 const express = require('express');
-const url_module = require('../modules/url_module');
+const url_module = require('../models/url_module');
 const shortid = require('shortid');
 router = express.Router()
 
@@ -17,14 +17,14 @@ router.post('/store_url',async(req,res)=>{
 })
 router.get('/:id',async(req, res)=>{
     try {
-        const uniqueUrl = req.params.id
-        console.log("uniqueUrl===",uniqueUrl)
-        const urlChecked = await url_module.findOne({url:uniqueUrl})
+        const url = req.params.id
+        console.log("url===",url)
+        const urlChecked = await url_module.findOne({shortUrl: url})
         if (!urlChecked){
            return res.status(404).json({"message":"url not found"})
         }
         console.log("urlChecked===",urlChecked)
-        res.status(200).json({"message":"url fetch successfully"})
+        // res.status(200).json({"message":"url fetch successfully"})
         return  res.redirect(urlChecked.url)
     } catch (error) {
         res.status(500).json({"message":error.message})
