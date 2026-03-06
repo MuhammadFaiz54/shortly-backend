@@ -1,33 +1,9 @@
 const express = require('express');
-const url_module = require('../models/url_module');
-const shortid = require('shortid');
+const authMiddleware = require('../middleware/auth_middleware');
+const { urlValidation } = require('../Validators');
+const { urlStoreController, getUrlController } = require('../controllers/url_controller');
 router = express.Router()
 
-router.post('/store_url',async(req,res)=>{
-    try {
-        const {url} = req.body
-        const unique_url = shortid.generate()
-        const shortUrl = new url_module({url:url})
-        shortUrl.shortUrl = unique_url
-       await shortUrl.save()
-        res.status(201).json({"message":"your url stored",shortUrl})
-    } catch (error) {
-        res.status(500).json({"message":error.message})
-    }
-})
-router.get('/:id',async(req, res)=>{
-    try {
-        const url = req.params.id
-        console.log("url===",url)
-        const urlChecked = await url_module.findOne({shortUrl: url})
-        if (!urlChecked){
-           return res.status(404).json({"message":"url not found"})
-        }
-        console.log("urlChecked===",urlChecked)
-        // res.status(200).json({"message":"url fetch successfully"})
-        return  res.redirect(urlChecked.url)
-    } catch (error) {
-        res.status(500).json({"message":error.message})
-    }
-})
+router.get('/:id', getUrlController)
+router.post('/store_url', authMiddleware, urlValidation,urlStoreController )
 module.exports = router
