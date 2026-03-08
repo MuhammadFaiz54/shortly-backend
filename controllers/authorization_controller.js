@@ -24,7 +24,7 @@ const authorizationF = async (req, res) => {
         const assignRolePermissionTarget = await RolePermission.findAll({ where: { role_id: role_id } })
         const assignRolePermissionTargetArr = assignRolePermissionTarget.map(v => v.permission_id)
         const canAccessAllMatch = assignRolePermissionTargetArr.every(permission_id => multiPermissionforAssigner.includes(permission_id))
-        console.log("canAccessAllMatch===", canAccessAllMatch);
+        console.log("canAccessAllMatch==", canAccessAllMatch);
         if (!canAccessAllMatch) {
             return res.status(403).json({
                 message: "Tum ye role nahi de sakte!"
