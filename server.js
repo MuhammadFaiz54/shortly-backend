@@ -4,7 +4,7 @@ const app = require('./app')
 const { connectMySQL, sequelize} = require('./config/mysql')
 dotenv.config();
 const MONGO_URI = process.env.MONGO_URI;
-
+const seedDataBase = require('./seeders')
 
 const APP_PORT = process.env.PORT;
 // mongodb
@@ -14,7 +14,11 @@ mongoose.connect(MONGO_URI).then(()=>console.log("Connected to MongoDB")).catch(
 connectMySQL()
 require('./models/index')
 sequelize.sync()
-.then(()=> console.log("Tables Ready"))
+.then(async()=> {
+    console.log("Tables Ready")
+    await seedDataBase()
+
+})
 .catch(err => console.log(err))
 
 app.get('/', (req, res) => {

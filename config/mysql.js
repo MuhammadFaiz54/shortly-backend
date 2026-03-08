@@ -1,10 +1,11 @@
 const { Sequelize } = require('sequelize')
+const mysql2 = require('mysql2/promise')
 require('dotenv').config()
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,      // "shortly"
-  process.env.DB_USER,      // "root"
-  process.env.DB_PASSWORD,  // "" 
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
     dialect: 'mysql'
@@ -13,6 +14,16 @@ const sequelize = new Sequelize(
 
 const connectMySQL = async () => {
   try {
+    // Step 1: Pehle database banao agar exist nahi karta
+    const conn = await mysql2.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD
+    })
+    await conn.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\``)
+    await conn.end()
+
+    // Step 2: Ab Sequelize connect karo
     await sequelize.authenticate()
     console.log('MySQL connected ✅')
   } catch (error) {
