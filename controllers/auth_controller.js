@@ -43,6 +43,10 @@ const loginController = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
         )
+        res.cookie('token', token, {
+            httpOnly: true,
+            sameSite: 'strict',
+        })
         return res.status(200).json({
             message: "Login Successfull", user: {
                 id: existUser.id,
